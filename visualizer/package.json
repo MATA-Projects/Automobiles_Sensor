@@ -1,0 +1,29 @@
+{
+  "name": "automobiles-surrounding-visualizer",
+  "version": "1.0.0",
+  "description": "A subset of our application used in detecting objects in the surroundings of automobiles based on the corner-sensors and front-camera data",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo \"Comman Not Available Yet\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MATA-Projects/Automobiles_Sensor.git"
+  },
+  "keywords": [
+    "threejs"
+  ],
+  "author": "MATA-Projects",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/MATA-Projects/Automobiles_Sensor/issues"
+  },
+  "homepage": "https://github.com/MATA-Projects/Automobiles_Sensor#README",
+  "dependencies": {
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "three": "^0.145.0"
+  }
+}
