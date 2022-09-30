@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+    detector:
+        image: detector:latest
+        ports:
+            - 50001:50001
+        command: ["python3","index.py"]
+
+    visualizer:
+        image: visualizer:latest
+        ports:
+            - 50000:50000
+        command: ["node", "server.js"]
