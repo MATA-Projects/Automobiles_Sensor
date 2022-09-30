@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 
 // ENVIRONMENT VARIABLES
-const PORT = 5000;
+const PORT = 50000;
 const FRONTEND_URL = "http://localhost:" + PORT
 
 
