@@ -14,6 +14,65 @@ import os
 
 
 
+sensors_table = pd.read_csv('./data/Group_349.csv', index_col='t')
+
+
+class CornersData():
+
+    def __init__(self, table=None, use_hackathon_column_name = True):
+        self.corners = {}
+        for column in table.columns:
+            if 'cornerData' in column and 'cornerTimestamp' not in column:
+                column_extracted = column.split('.')
+                corner_id = int(column_extracted[-5][1])
+                object_id = int(column_extracted[-2][1])
+                measurement_type = column_extracted[-1][3:]
+                corner_name = CornersData.corner_to_id(corner_id)
+                if(corner_name not in self.corners):
+                    self.corners[corner_name] = {"id" : corner_id, 'objects' : []}
+                self.corners[CornersData.corner_to_id(corner_id)]['objects'].append({
+                    "object_id" : object_id,
+                    "measurement_type" : measurement_type,
+                    "measurement_normalized" : table.iloc[0][column]
+                })
+
+        self._denormalize()
+
+    def _denormalize(self):
+        for corner, cdata in self.corners.items():
+            for obj in cdata['objects']:
+                if('d' in obj['measurement_type']): # Denormalizing Distance
+                    obj['measurement_denormalized'] = obj['measurement_normalized'] / 128
+                elif('v' in obj['measurement_type']): # Denormalizing Velocity
+                    obj['measurement_denormalized'] = obj['measurement_normalized'] / 256
+                elif('a' in obj['measurement_type']): # Denormalizing Acceleration
+                    obj['measurement_denormalized'] = obj['measurement_normalized'] / 2048
+                elif('prob' in obj['measurement_type']): # Denormalizing Obstacle Probability
+                    obj['measurement_denormalized'] = obj['measurement_normalized'] / 128
+
+
+    def get_corners(self):
+        return self.corners
+
+    @staticmethod
+    def corner_to_id(id):
+        if id == 0:
+            return "LEFT_FRONT"
+        if id == 1:
+            return "RIGHT_FRONT"
+        if id == 2:
+            return "LEFT_BOTTOM"
+        if id == 3:
+            return "RIGHT_BOTTOM"
+        else:
+            raise Exception("ID OF THE CORNER IS NOT VALID")
+
+
+
+data = CornersData(sensors_table)
+print(data.get_corners())
+
+
 '''
     Loads all CSV files in a given directory
 '''
@@ -43,9 +102,11 @@ def load_datasets():
     return groups
 
 
-groups = load_datasets()
+# groups = load_datasets()
 
-print(groups[0][0].columns)
+# print(groups[0][0].columns)
+
+
 
 
 
