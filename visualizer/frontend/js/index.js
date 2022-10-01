@@ -46,7 +46,7 @@ function renderToCanvas(canvasid) {
     const canvas_dom_obj = document.getElementById(canvasid);
     const renderer = new THREE.WebGLRenderer({ canvas:canvas_dom_obj });
     renderer.setScissorTest(true);
-    
+    renderer.setClearColor( "#696969");
     //CAMERA
 
     //VIEW CAMERA
@@ -84,7 +84,6 @@ function renderToCanvas(canvasid) {
     //SCENE
     const scene = new THREE.Scene();
     scene.add(cameraHelper2);
-
 
     const size = 20;
     const divisions = 10;
