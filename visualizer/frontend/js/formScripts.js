@@ -16,3 +16,33 @@ function renderObjectDataPanel(){
         ObjectDataPanel.innerHTML += "<br>";
     }
 }
+
+
+$(document).ready(function() {
+
+    $('form').on('submit', function(event) {
+    
+    $.ajax({
+        data: {
+            data_order: $('#iorder').val(),
+            data_input: $('#sensors_content').val()
+        },
+        headers:{
+            "Content-Type" : "application/json",
+        },
+        type: 'POST',
+        url: '../api/predict'
+    })
+    .done(function(data){
+        if(data.error){
+            $('#errorAlert').text(data.error).show();
+            $('#successAlert').hide();
+        }else{
+            $('#successAlert').text(data.input_order).show();
+            $('#errorAlert').hide();
+        }
+    });
+    console.log("Function was called")
+    event.preventDefault(); 
+});
+});

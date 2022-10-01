@@ -119,22 +119,37 @@ def load_datasets():
 # from flask import Flask, request
 # app = Flask(__name__)
 
+from flask import Flask, request, jsonify
 
-# '''
-# This endpoint receives a sensor input data at a given timestamp and produces an output. 
+app = Flask(__name__)
+'''
+This endpoint receives a sensor input data at a given timestamp and produces an output. 
 
 
 # Input:
 #     sensor_data : []
 
-# Output:
-#     {}
-# '''
-# @app.post("/predict")
-# def predict():
-#     logger.debug(f"Predicting the given data: {request.form.get('sensor_data')}")
-#     return "<p>Hello, World!</p>"
+Output:
+    {}
+'''
+
+@app.route('/')
+def index():
+    return 'hello'
+
+@app.route('/predict', methods=['post'])
+def predict():
+    print('hihi')
+    return {'hi':'hi'}
+    data_order = request.form.get('input_order')
+    data_input = request.form.get('sensors_content')
+    if data_input and data_order:
+        new_data_order = data_order[::-1]
+
+        return jsonify({'input_order': new_data_order})
+    return jsonify({'error': 'Missing data!'}) 
+    
 
 
-# if __name__ == "__main__":
-#     app.run(host='0.0.0.0', port=50001)
+if __name__ == '__main__':
+    app.run(port=50003, debug=True)

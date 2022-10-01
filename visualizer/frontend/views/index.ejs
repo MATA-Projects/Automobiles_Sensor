@@ -19,7 +19,7 @@
 			<canvas width="720px" height="720px"  id="3DWindow" style="width:115vh; height:75vh"></canvas>
 		</div>
 		<div class="float-child container">
-			<form action="/action_page.php">
+			<form >
 				<h4>Sensor input info:</h4>
 				<table class="identifier_table">
 					<tr>
@@ -46,16 +46,35 @@
 
 			<h4>Choose inputs by order:</h4>
 			<label for="iorder">Inputs Order:</label>
+<<<<<<< HEAD
 			<input type="text" id="iorder" name="inputorder" placeholder="dx,id,dy,vx,vy,ax,az">
 			<br>
 			<label for="sensors_content">Inputs Data:</label>
 			<textarea id="sensors_content" name="sensors_content" placeholder="0,0,0,0.."></textarea>
 			<h6>Note: New lines seperate individual sensor data</h6>
 			<input type="submit" value="Submit">
+=======
+			<input type="text" id="iorder" name="input_order" placeholder="dx,id,dy,vx,vy,ax,az">
+			<!-- <h4>Enter the number of Objects:</h4>
+			<span>1</span>
+				<input type="range" value="1" max="10" min="1" id="objects_count">
+			<span>10</span> -->
+			<br>
+			<label for="sensors_content">Inputs Data:</label>
+			<textarea id="sensors_content" name="sensors_content"></textarea>
+
+			<button class="sendButton" type="submit" > Send </button>
+>>>>>>> a0f5aef0f32a03dbfd4ec7f11f5816081c326ce2
 			</form>
+			<br>
+
 		</div>
 	</div>
-	
+	<div id="successAlert" class="alert alert-success" role="alert" style="display: none;"> </div>
+	<div id="errorAlert" class="alert alert-danger" role="alert" style="display: none;"> </div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+
 	<script type="module" src="../js/index.js"></script>
 	<script type="module" src="../js/formScripts.js"></script>
 </body>

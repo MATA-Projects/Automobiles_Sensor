@@ -3,3 +3,4 @@
 
 *datasets/
 detector/data
+*__pycache__
