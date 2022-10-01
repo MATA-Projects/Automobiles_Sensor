@@ -35,11 +35,11 @@ function renderToCanvas(canvasid) {
     // OBJECTS
     
     const objLoader = new OBJLoader();
-    // objLoader.setPath('/models/');
-    objLoader.load('/car.obj', function(object) {
-        object.position.y -= 60;
-        scene.add(object);
-    });
+    // objLoader.setPath('frontend/resources/models/car/');
+    // objLoader.load('/car.obj', function(object) {
+    //     object.position.y -= 60;
+    //     scene.add(object);
+    // });
     {
         const color = 0xFFFFFF;
         const intensity = 1;
