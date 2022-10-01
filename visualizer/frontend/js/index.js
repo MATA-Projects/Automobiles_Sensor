@@ -84,6 +84,13 @@ function renderToCanvas(canvasid) {
     //SCENE
     const scene = new THREE.Scene();
     scene.add(cameraHelper2);
+
+
+    const size = 20;
+    const divisions = 10;
+
+    const gridHelper = new THREE.GridHelper( size, divisions );
+    scene.add( gridHelper );
     // OBJECTS
     
     const objLoader = new OBJLoader();
@@ -91,8 +98,8 @@ function renderToCanvas(canvasid) {
 
     objLoader.setPath('./models/');
     objLoader.load(`car/car.obj`, function(object) {
-        // object.position.y -= 60;
-        object.scale.set(10,10,10);
+        object.position.y += 0.5;
+        // object.scale.set(10,10,10);
         scene.add(object);
     });
 

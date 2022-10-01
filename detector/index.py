@@ -201,9 +201,10 @@ Output:
 '''
 @app.route('/predict', methods=['post'])
 def predict():
-
+    
     data_order = request.form.get('input_order')
     data_input = request.form.get('sensors_content')
+    logger.debug(f'Heloooooooooooooooooooooooooooooooooooooooooo    {data_order}, {data_input}')
     if data_input and data_order:
         new_data_order = data_order[::-1]
 
