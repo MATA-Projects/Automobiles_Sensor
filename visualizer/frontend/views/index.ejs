@@ -8,10 +8,59 @@
 	<title>
 		<%= subject %>
 	</title>
+	
 </head>
 
 <body>
-	<canvas id="3DWindow" width="500px" height="500px"></canvas>
+	<script src="../js/presetup.js"></script>
+
+	<div class="ParentDiv">
+		<div class="float-child">
+			<canvas width="720px" height="720px"  id="3DWindow" style="width:115vh; height:75vh"></canvas>
+		</div>
+		<div class="float-child container">
+			<form action="/action_page.php">
+				<h4>Sensor input info:</h4>
+				<table class="identifier_table">
+					<tr>
+						<th>id</th>
+						<th>dx</th>
+						<th>dy</th>
+						<th>vx</th>
+						<th>vy</th>
+						<th>ax</th>
+						<th>az</th>
+					</tr>
+					<tr>
+						<td>radar ID from [0..3]</td>
+						<td>longi object distance</td>
+						<td>lateral object distance</td>
+						<td>longi object velocity</td>
+						<td>lateral object velocity</td>
+						<td>longi object acceleration</td>
+						<td>lateral object acceleration</td>
+					</tr>
+					
+				</table>
+	
+
+			<h4>Choose inputs by order:</h4>
+			<label for="iorder">Inputs Order:</label>
+			<input type="text" id="iorder" name="inputorder" placeholder="dx,id,dy,vx,vy,ax,az">
+			<!-- <h4>Enter the number of Objects:</h4>
+			<span>1</span>
+				<input type="range" value="1" max="10" min="1" id="objects_count">
+			<span>10</span> -->
+			<br>
+			<label for="sensors_content">Inputs Data:</label>
+			<textarea id="sensors_content" name="sensors_content"></textarea>
+
+			<input type="submit" value="Submit">
+			</form>
+		</div>
+	</div>
+	
 	<script type="module" src="../js/index.js"></script>
+	<script type="module" src="../js/formScripts.js"></script>
 </body>
 </html>
