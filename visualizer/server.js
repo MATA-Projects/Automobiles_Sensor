@@ -2,10 +2,11 @@
 
 const express = require('express');
 const path = require('path');
+const axios = require('axios');
 const app = express();
 
 // ENVIRONMENT VARIABLES
-const PORT = 50000;
+const PORT = 5000;
 const FRONTEND_URL = "http://localhost:" + PORT
 
 
@@ -26,6 +27,20 @@ app.get('/', (req, res) => {
         frontend_url:FRONTEND_URL
     });
 });
+
+
+app.post('/api/predict', (req, res) => {
+    axios.post('http://127.0.0.1:50003/predict', {
+        good : 'hi'
+    }).then(resp => {
+        console.log(resp.data);
+        return res.status(200).send(resp.data);
+    }).catch(err => {
+        console.log('error: ', err)
+        return res.status(500).send(err);
+    })
+   
+})
 
 
 app.listen(PORT, () => {
