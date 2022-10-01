@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 import { OrbitControls } from './lib/three/examples/jsm/controls/OrbitControls.js';
 import {OBJLoader} from './lib/three/examples/jsm/loaders/OBJLoader.js';
@@ -35,11 +35,16 @@ function renderToCanvas(canvasid) {
     // OBJECTS
     
     const objLoader = new OBJLoader();
-    // objLoader.setPath('/models/');
-    objLoader.load('/car.obj', function(object) {
+
+
+    objLoader.setPath('./models/');
+    objLoader.load(`car/car.obj`, function(object) {
         object.position.y -= 60;
+        object.scale.set(10,10,10);
         scene.add(object);
     });
+
+
     {
         const color = 0xFFFFFF;
         const intensity = 1;
