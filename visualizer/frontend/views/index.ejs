@@ -13,26 +13,41 @@
 
 <body>
 	
-	<canvas id="3DWindow" width="500px" height="500px"></canvas>
-	<script >
-		if (!(HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'))) {
-			console.log("Your browser does not support importmaps, please try another browser");
-			throw new Error("Please run the application on a different browser");
-		}else{
-			console.log("Your browser supports importmaps");
-		}
-		
-		const importMap = {
-			imports: {
-				three: './js/lib/three/build/three.module.js'
-			}
-		};
-		const im = document.createElement('script');
-		im.type = 'importmap';
-		im.textContent = JSON.stringify(importMap);
-		document.currentScript.after(im);
-	</script>
 
+	<div class="ParentDiv">
+		<div class="float-child">
+			<canvas width="720px" height="720px"  id="3DWindow" style="width:115vh; height:75vh"></canvas>
+		</div>
+		<div class="float-child container">
+			<form action="/action_page.php">
+			<h4>Sensor input info:</h4>
+			<p>id: radar ID from [0..3].</p>
+			<p>dx: longi object distance.</p>
+			<p>dy: lateral object distance.</p>
+			<p>vx: longi object velocity.</p>
+			<p>vy: lateral object velocity.</p>
+			<p>ax: longi object acceleration.</p>
+			<p>az: lateral object acceleration.</p>
+
+			<h4>Choose inputs by order:</h4>
+			<label for="iorder">Inputs Order:</label>
+			<input type="text" id="iorder" name="inputorder" placeholder="dx,id,dy,vx,vy,ax,az">
+			<h4>Enter the number of Objects:</h4>
+			<span>1</span>
+				<input type="range" value="1" max="10" min="1" id="objects_count">
+			<span>10</span>
+			<br>
+			<div id="object_rows">
+				<!-- Will be inputted by Javascript because it is dynamic and relies on the count of objects-->
+			</div>
+		
+			<input type="submit" value="Submit">
+			</form>
+		</div>
+	</div>
+	
+	<script type="module" src="../js/presetup.js"></script>
 	<script type="module" src="../js/index.js"></script>
+	<script type="module" src="../js/formScripts.js"></script>
 </body>
 </html>
