@@ -15,6 +15,7 @@ app.set('views', path.join(__dirname, 'frontend/views'));
 
 // SETTING THE PUBLIC PATHS
 app.use('/js', express.static('frontend/js'));
+app.use('/modules', express.static('frontend/node_modules'));
 app.use('/css', express.static('frontend/css'));
 
 // SETTIGN THE RENDERING ENDPOINT
@@ -27,5 +28,5 @@ app.get('/', (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`App is listening on port ${PORT}`);
+    console.log(`App is listening on port ${FRONTEND_URL}`);
 });
