@@ -2,9 +2,9 @@ const ObjectsCount = document.getElementById("objects_count");
 const ObjectDataPanel = document.getElementById("object_rows"); 
 
 
-ObjectsCount.addEventListener("change",(ev) => {renderObjectDataPanel();} );    
+// ObjectsCount.addEventListener("change",(ev) => {renderObjectDataPanel();} );    
 
-renderObjectDataPanel();  
+// renderObjectDataPanel();  
 
 function renderObjectDataPanel(){
     ObjectDataPanel.innerHTML = "";

@@ -6,6 +6,14 @@ if (!(HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'))) {
     console.log("Your browser supports importmaps");
 }
 
+
+		
+const importMap = {
+    imports: {
+        three: './js/lib/three/build/three.module.js'
+    }
+};
+
 const im = document.createElement('script');
 im.type = 'importmap';
 im.textContent = JSON.stringify(importMap);
