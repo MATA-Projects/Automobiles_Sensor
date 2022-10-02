@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 ##################################
 import pandas as pd
 import os
-
+import math
 
 
 # sensors_table = pd.read_csv('./data/Group_349.csv', index_col='t')
@@ -190,7 +190,7 @@ class CornersData():
 
         logger.debug(f'(lefts, rights, fronts, bottoms): {(shared_lefts,shared_rights, shared_fronts, shared_bottoms)}')
 
-        return [max(shared_lefts, shared_rights),0, max(shared_bottoms, shared_fronts)]
+        return [max(shared_lefts, shared_rights),1, max(shared_bottoms, shared_fronts)]
         
 
     def get_corners(self):
@@ -340,6 +340,10 @@ def predict():
 
             shared_sensors = cd.get_shared_sensors(corner_name, object_id)            
             dims = cd.estimate_dimensions(shared_sensors)
+            l = dims[0]
+            w = dims[2]
+            h = dims[1]
+            
             obj = {
                 "dx" : object_data['dx_denormalized'],
                 "dy" : object_data['dy_denormalized'],
@@ -351,13 +355,16 @@ def predict():
                 "ax" : object_data['ax_denormalized'],
                 "ay" : object_data['ay_denormalized'],
 
-                "length": dims[0],
-                "width" : dims[2],
-                "height": dims[1],
-
                 "found_in": shared_sensors
             }
+            dst_sqr = math.sqrt(obj['dx']* obj['dx'] + obj['dy'] * obj['dy'] + obj['dz']* obj['dz'])
+
+            obj['length'] = dst_sqr if l == 2 else 1
+            obj['width'] = dst_sqr if w == 2 else 1
+            obj['height'] = dst_sqr if h == 2 else 1
             
+
+
             returned_entities.append(obj)
 
 

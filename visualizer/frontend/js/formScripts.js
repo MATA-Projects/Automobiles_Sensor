@@ -34,6 +34,9 @@ $(document).ready(function() {
         url: '../api/predict'
     })
     .done(function(data){
+        console.log('Recevied Data: ', data);
+        localStorage.setItem('needs_update', true);
+        localStorage.setItem('models_data', JSON.stringify(data));
         if(data.error){
             $('#errorAlert').text(data.error).show();
             $('#successAlert').hide();
