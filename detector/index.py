@@ -125,16 +125,88 @@ class CornersData():
                 #     obj[key.split('_')[0]] = obj[key] / 128
 
 
+    def get_shared_sensors(self, cname, oid):
+        common = [(cname,oid)]
+        cdata = self.corners[cname]
+        odata = cdata["objects"][oid]
+
+        for cname_, cdata_ in self.corners.items():
+            if(cname != cname_):
+                for oid_, odata_ in cdata_["objects"].items():
+                    logger.debug(f'Comparing Objects: {oid} & {oid_} from {cname} & {cname_}') 
+                    if(self.compare_objects(odata_, odata) > 0.5):
+                        common.append((cname_,oid_))
+                        logger.debug(f'Similar Objects Found in: {cname} & {cname_}') 
+                    else:
+                        logger.debug(f'No Similar Found in: {cname} & {cname_}') 
+        return common 
+
+
+    def compare_objects(self, o1, o2):
+        score = 0
+        epsilon = 0.01
+        tests = 0
+        # Velocity Absolute difference
+        tests+=1
+        if(abs(o1['vx_denormalized'] - o2['vx_denormalized']) < epsilon):
+            score += 1
+
+        tests+=1
+        if(abs(o1['vy_denormalized'] - o2['vy_denormalized']) < epsilon):
+            score += 1
+
+        tests+=1
+        v1_vec_sq = o1['vx_denormalized'] *  o1['vx_denormalized'] + o1['vy_denormalized']*o1['vy_denormalized']
+        v2_vec_sq = o2['vx_denormalized'] *  o2['vx_denormalized'] + o2['vy_denormalized']*o2['vy_denormalized']
+        if(abs(v1_vec_sq - v2_vec_sq) < epsilon):
+            score += 1
+
+        tests+=1
+        # Acceleration Absolute difference
+        if(abs(o1['ax_denormalized'] - o2['ax_denormalized']) < epsilon):
+            score += 1
+
+        tests+=1
+        if(abs(o1['ay_denormalized'] - o2['ay_denormalized']) < epsilon):
+            score += 1
+
+        tests+=1
+        a1_vec_sq = o1['ax_denormalized'] *  o1['ax_denormalized'] + o1['ay_denormalized']*o1['ay_denormalized']
+        a2_vec_sq = o2['ax_denormalized'] *  o2['ax_denormalized'] + o2['ay_denormalized']*o2['ay_denormalized']
+        if(abs(a1_vec_sq - a2_vec_sq) < epsilon):
+            score += 1
+
+        return score / tests
+
+
+    def estimate_dimensions(self, shared_sensors, cid, object_id):
+        return [0,0,0]
+        
+
     def get_corners(self):
         return self.corners
+
+    def is_empty(self, cname, oid):
+        odata = self.corners[cname]["objects"][oid]
+        epsilon = 0.01
+
+        v_vec_sq = odata['vx_denormalized'] *  odata['vx_denormalized'] + odata['vy_denormalized']*odata['vy_denormalized']
+        a_vec_sq = odata['ax_denormalized'] *  odata['ax_denormalized'] + odata['ay_denormalized']*odata['ay_denormalized']
+        d_vec_sq = odata['dx_denormalized'] *  odata['dx_denormalized'] + odata['dy_denormalized']*odata['dy_denormalized'] 
+        
+        if( abs(v_vec_sq) < epsilon and abs(a_vec_sq) < epsilon and abs(d_vec_sq) < epsilon):
+            return True
+        else:
+            return False
+
 
     @staticmethod
     def corner_to_id(id):
         if id == 0:
             return "LEFT_FRONT"
-        if id == 1:
-            return "RIGHT_FRONT"
         if id == 2:
+            return "RIGHT_FRONT"
+        if id == 1:
             return "LEFT_BOTTOM"
         if id == 3:
             return "RIGHT_BOTTOM"
@@ -210,7 +282,7 @@ Return:
 def get_parameters():
     return {input_values}
 
-
+PRODUCTION=False
 
 '''
 This endpoint receives a sensor input data at a given timestamp and produces an output. 
@@ -224,30 +296,85 @@ Output:
 '''
 @app.route('/predict', methods=['post'])
 def predict():
-    data = request.json
-    #logger.debug(f'Received args: {request.kwargs}')
-    data_order = data.get('inputorder').split(",")
-    data_input = list(map(lambda x: x.split(",") , data.get('sensors_content').split("\n")))
-    tableMap = {}
-    for i in range(len(data_order)):
-        tableMap[data_order[i]] = []
-        for j in range(len(data_input)):
-            tableMap[data_order[i]].append(int(data_input[j][i]))
-    
-    df = pd.DataFrame(tableMap)
-    logger.debug(f'{df}')
+    cd = {}
+    cornersVar = {}
+    if(PRODUCTION):
+        data = request.json
+        data_order = data.get('inputorder').split(",")
+        data_input = list(map(lambda x: x.split(",") , data.get('sensors_content').split("\n")))
+        tableMap = {}
+        for i in range(len(data_order)):
+            tableMap[data_order[i]] = []
+            for j in range(len(data_input)):
+                tableMap[data_order[i]].append(int(data_input[j][i]))
+        
+        df = pd.DataFrame(tableMap)
+        logger.debug(f'{df}')
 
-    cd = CornersData(df, False)
-    cornersVar = cd.get_corners()
+        cd = CornersData(df, False)
+        cornersVar = dict(cd.get_corners()).copy()
+    else:
+        df = pd.read_csv('./data/Group_349.csv', index_col='t')
+        cd = CornersData(df)
+        cornersVar = dict(cd.get_corners()).copy()
     logger.debug(f'{cornersVar}')
 
-
     
-    if data_input and data_order:
-        new_data_order = data_order[::-1]
+    # Returning the processed objects to the frontend to be rendered
+    # Get A sensor data
+    returned_entities = []
+    for corner_name, corner_data in cornersVar.items():
+        for object_id , object_data in corner_data['objects'].items():
+            if(cd.is_empty(corner_name, object_id)):
+                continue
 
-        return jsonify({'input_order': new_data_order})
-    return jsonify({'error': 'Missing data!'}) 
+            shared_sensors = cd.get_shared_sensors(corner_name, object_id)            
+            dims = cd.estimate_dimensions(shared_sensors, corner_name, object_id)
+            obj = {
+                "dx" : object_data['dx_denormalized'],
+                "dy" : object_data['dy_denormalized'],
+                "dz" : object_data['dz_denormalized'],
+
+                "vx" : object_data['vx_denormalized'],
+                "vy" : object_data['vy_denormalized'],
+
+                "ax" : object_data['ax_denormalized'],
+                "ay" : object_data['ay_denormalized'],
+
+                "length": dims[0],
+                "width" : dims[1],
+                "height": dims[2],
+
+                "found_in": shared_sensors
+            }
+            
+            returned_entities.append(obj)
+
+
+    # Remove Redundent Entities
+    final_returned = []
+    for idx in range(len(returned_entities)) :
+        cur_obj = returned_entities[idx]
+        found = False
+        if(len(cur_obj["found_in"]) < 2):
+            final_returned.append(cur_obj)
+            continue
+
+        for itm in returned_entities[idx+1:]:
+            if(len(itm["found_in"]) < 2):
+                continue
+            
+            founds_cur1 = sorted([ corn for corn, id in cur_obj["found_in"]])
+            founds_cur2 = sorted([ corn for corn, id in itm["found_in"]])
+            if(founds_cur1 == founds_cur2):
+                logger.debug(f'Found Shared Entities At {founds_cur1} == {founds_cur2}')
+                found = True
+                break
+
+        if(not found):
+            final_returned.append(cur_obj)
+            
+    return final_returned
     
 
 
