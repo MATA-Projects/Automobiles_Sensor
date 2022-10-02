@@ -21,12 +21,12 @@ function renderObjectDataPanel(){
 $(document).ready(function() {
 
     $('form').on('submit', function(event) {
-    
+        event.preventDefault(); 
     $.ajax({
-        data: {
+        data: JSON.stringify({
             data_order: $('#iorder').val(),
             data_input: $('#sensors_content').val()
-        },
+        }),
         headers:{
             "Content-Type" : "application/json",
         },
@@ -43,6 +43,6 @@ $(document).ready(function() {
         }
     });
     console.log("Function was called")
-    event.preventDefault(); 
+    
 });
 });

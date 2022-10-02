@@ -14,7 +14,7 @@ import os
 
 
 
-sensors_table = pd.read_csv('./data/Group_349.csv', index_col='t')
+# sensors_table = pd.read_csv('./data/Group_349.csv', index_col='t')
 
 
 input_values = {
@@ -120,8 +120,8 @@ class CornersData():
 
 
 
-data = CornersData(sensors_table)
-print(data.get_corners()["LEFT_FRONT"]["objects"].keys())
+# data = CornersData(sensors_table)
+# print(data.get_corners()["LEFT_FRONT"]["objects"].keys())
 
 
 '''
@@ -201,9 +201,10 @@ Output:
 '''
 @app.route('/predict', methods=['post'])
 def predict():
-    
-    data_order = request.form.get('input_order')
-    data_input = request.form.get('sensors_content')
+    data = request.json
+    #logger.debug(f'Received args: {request.kwargs}')
+    data_order = data.get('inputorder')
+    data_input = data.get('sensors_content')
     logger.debug(f'Heloooooooooooooooooooooooooooooooooooooooooo    {data_order}, {data_input}')
     if data_input and data_order:
         new_data_order = data_order[::-1]
@@ -213,5 +214,5 @@ def predict():
     
 
 
-# if __name__ == '__main__':
-#     app.run(port=50003, debug=True)
+if __name__ == '__main__':
+    app.run(port=50003, debug=True)
