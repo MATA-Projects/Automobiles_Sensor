@@ -40,8 +40,8 @@ app.post('/api/predict', (req, res) => {
         method: 'post',
         url: 'http://127.0.0.1:50003/predict',
         data: {
-            sensors_content : req.body.data_order,
-            inputorder : req.body.data_input
+            sensors_content : req.body.data_input,
+            inputorder : req.body.data_order
         }
       }).then(resp => {
         console.log(resp.data);
