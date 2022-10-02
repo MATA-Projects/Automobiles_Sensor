@@ -179,8 +179,18 @@ class CornersData():
         return score / tests
 
 
-    def estimate_dimensions(self, shared_sensors, cid, object_id):
-        return [0,0,0]
+    def estimate_dimensions(self, shared_sensors):
+        founds = sorted([ corn for corn, id in shared_sensors])
+        
+        shared_bottoms = len([bottom for bottom in founds if 'BOTTOM' in bottom ])
+        shared_fronts = len([front for front in founds if 'FRONT' in front ])
+        
+        shared_lefts = len([left for left in founds if 'LEFT' in left ])
+        shared_rights = len([right for right in founds if 'RIGHT' in right ])
+
+        logger.debug(f'(lefts, rights, fronts, bottoms): {(shared_lefts,shared_rights, shared_fronts, shared_bottoms)}')
+
+        return [max(shared_lefts, shared_rights),0, max(shared_bottoms, shared_fronts)]
         
 
     def get_corners(self):
@@ -329,7 +339,7 @@ def predict():
                 continue
 
             shared_sensors = cd.get_shared_sensors(corner_name, object_id)            
-            dims = cd.estimate_dimensions(shared_sensors, corner_name, object_id)
+            dims = cd.estimate_dimensions(shared_sensors)
             obj = {
                 "dx" : object_data['dx_denormalized'],
                 "dy" : object_data['dy_denormalized'],
@@ -342,8 +352,8 @@ def predict():
                 "ay" : object_data['ay_denormalized'],
 
                 "length": dims[0],
-                "width" : dims[1],
-                "height": dims[2],
+                "width" : dims[2],
+                "height": dims[1],
 
                 "found_in": shared_sensors
             }
