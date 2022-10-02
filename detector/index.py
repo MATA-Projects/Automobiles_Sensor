@@ -28,7 +28,7 @@ input_values = {
     "object_acceleration_x" : "oax",
     "object_acceleration_y" : "oay",
     "object_velocity_x" : "ovx",
-    "object_velocity_y" : "ovx",
+    "object_velocity_y" : "ovy",
 
     # Host parameters
     "host_velocity_x" : "hvx", 
@@ -93,7 +93,9 @@ class CornersData():
                         "ax_normalized": row[input_values['object_acceleration_x']],
                         "ay_normalized": row[input_values['object_acceleration_y']]
                     }
-                    self.corners[cid]['objects'][oid] = obj
+                    if (oid not in self.corners[corner_name]['objects'] ):
+                        self.corners[corner_name]['objects'][oid] = {}
+                    self.corners[corner_name]['objects'][oid] = obj
 
         self._denormalize()
 
@@ -224,9 +226,23 @@ Output:
 def predict():
     data = request.json
     #logger.debug(f'Received args: {request.kwargs}')
-    data_order = data.get('inputorder')
-    data_input = data.get('sensors_content')
-    logger.debug(f'Heloooooooooooooooooooooooooooooooooooooooooo    {data_order}, {data_input}')
+    data_order = data.get('inputorder').split(",")
+    data_input = list(map(lambda x: x.split(",") , data.get('sensors_content').split("\n")))
+    tableMap = {}
+    for i in range(len(data_order)):
+        tableMap[data_order[i]] = []
+        for j in range(len(data_input)):
+            tableMap[data_order[i]].append(int(data_input[j][i]))
+    
+    df = pd.DataFrame(tableMap)
+    logger.debug(f'{df}')
+
+    cd = CornersData(df, False)
+    cornersVar = cd.get_corners()
+    logger.debug(f'{cornersVar}')
+
+
+    
     if data_input and data_order:
         new_data_order = data_order[::-1]
 
