@@ -24,6 +24,7 @@ input_values = {
     "object_id" : "oid",
     "object_distance_x" : "odx",
     "object_distance_y" : "ody",
+    "object_distance_z" : "odz",
     "object_acceleration_x" : "oax",
     "object_acceleration_y" : "oay",
     "object_velocity_x" : "ovx",
@@ -35,6 +36,25 @@ input_values = {
     "host_acceleration_x" : "hax",
     "host_acceleration_y" : "hay"
 }
+
+
+
+'''
+Creates a structure as follows from the given data:
+
+Corners : {
+    <radar position>:
+        {
+            cid: <radar id> 
+            objects : {
+                <object id> : {
+                    <*x|y_(de)*normalized> : float
+                }
+            }
+        }
+}
+
+'''
 
 class CornersData():
     def __init__(self, table=None, use_hackathon_column_name = True):
@@ -48,7 +68,7 @@ class CornersData():
                     measurement_type = column_extracted[-1][3:]
                     corner_name = CornersData.corner_to_id(corner_id)
                     if(corner_name not in self.corners):
-                        self.corners[corner_name] = {"id" : corner_id, 'objects' : {}}
+                        self.corners[corner_name] = {"cid" : corner_id, 'objects' : {}}
                     if(object_id not in self.corners[CornersData.corner_to_id(corner_id)]['objects']):
                         self.corners[CornersData.corner_to_id(corner_id)]['objects'][object_id] = {'object_id': object_id}
                     self.corners[CornersData.corner_to_id(corner_id)]['objects'][object_id][str(measurement_type+"_normalized")] = table.iloc[0][column]
@@ -67,6 +87,7 @@ class CornersData():
                         "object_id" : oid,
                         "dx_normalized": row[input_values['object_distance_x']],
                         "dy_normalized": row[input_values['object_distance_y']],
+                        "dz_normalized": row[input_values['object_distance_z']],
                         "vx_normalized": row[input_values['object_velocity_x']],
                         "vy_normalized": row[input_values['object_velocity_y']],
                         "ax_normalized": row[input_values['object_acceleration_x']],
@@ -88,9 +109,9 @@ class CornersData():
         for corner, cdata in self.corners.items():
             for obj in cdata['objects']:
                 robj = cdata['objects'][obj]
-                d_keys = [key for key in robj.keys() if 'dx' in key or 'dy' in key]
-                v_keys = [key for key in robj.keys() if 'vx' in key or 'vy' in key]
-                a_keys = [key for key in robj.keys() if 'ax' in key or 'ay' in key]
+                d_keys = [key for key in robj.keys() if 'dx' in key or 'dy' in key or 'dz' in key]
+                v_keys = [key for key in robj.keys() if 'vx' in key or 'vy' in key or 'vz' in key]
+                a_keys = [key for key in robj.keys() if 'ax' in key or 'ay' in key or 'az' in key]
                 for key in d_keys: # Denormalizing Distance
                     robj[key.split('_')[0]+"_denormalized"] = robj[key] / 128
 
