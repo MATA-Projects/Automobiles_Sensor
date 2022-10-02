@@ -37,7 +37,34 @@ function setScissorForElement(elem) {
 
 
 
+function renderCorner(dx, dy, dz, azimoth, elavation, canvas){
 
+    let dir = new THREE.Vector3(5, 0, 0);
+    dir = dir.applyAxisAngle(new THREE.Vector3(0,1,0), (azimoth/180)*Math.PI);
+
+    const camera = new THREE.PerspectiveCamera(
+        75,  // fov
+        1,   // aspect
+        0.1, // near
+        10, // far
+    );
+
+    let v = new THREE.Vector3(0,0,0);
+
+
+    camera.lookAt(dir);
+    camera.updateProjectionMatrix();
+    camera.position.set(dx, dy , -dz );
+    camera.updateProjectionMatrix();
+
+    camera.getWorldDirection(v);    // Must be called for somereason to update the rotation
+
+    const cameraHelper = new THREE.CameraHelper(camera);
+    cameraHelper.update();
+    cameraHelper.visible = true;
+
+    return {camera: camera, cameraHelper: cameraHelper};
+}
 
 function renderToCanvas(canvasid) {
     // DOM OBJECTS
@@ -60,18 +87,7 @@ function renderToCanvas(canvasid) {
     
     //------------------------------------------------------------------
     //1st camera
-    // const view2Elem = document.querySelector('#view2');
-    const camera2 = new THREE.PerspectiveCamera(
-        30,  // fov
-        window.innerWidth/window.innerHeight,   // aspect
-        5, // near
-        10, // far
-      );
-      camera2.position.set(10, 5, -30);
-      camera2.lookAt (0,0,0);
-      camera2.rotation.y = (Math.PI);
-      const cameraHelper2 = new THREE.CameraHelper(camera2);
-      cameraHelper2.visible = true;
+    
 
       //controls2.update();
     //CONTROLERS
@@ -83,7 +99,16 @@ function renderToCanvas(canvasid) {
 
     //SCENE
     const scene = new THREE.Scene();
-    scene.add(cameraHelper2);
+    const corners = [
+        renderCorner(3473.8 / 1000, 0.5, 628.6/1000, 42, 0, renderer.domElement),
+        renderCorner(-766.4 / 1000, 0.5, 738/1000, 135, 0, renderer.domElement),
+        renderCorner(3473.8 / 1000, 0.5, -628.6/1000, -42, 0, renderer.domElement),
+        renderCorner(-766.4 / 1000, 0.5, -738/1000, -135, 0, renderer.domElement),
+    ];
+    
+    for (const corner of corners){
+        scene.add(corner.cameraHelper);
+    }
 
     const size = 20;
     const divisions = 10;
@@ -98,7 +123,10 @@ function renderToCanvas(canvasid) {
     objLoader.setPath('./models/');
     objLoader.load(`car/car.obj`, function(object) {
         object.position.y += 0.5;
-        // object.scale.set(10,10,10);
+        object.scale.set(0.75,0.75,0.75);
+        object.position.x = 1.4;
+        object.rotation.y = 90/180*Math.PI;
+        
         scene.add(object);
     });
 
