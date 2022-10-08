@@ -4,37 +4,51 @@ import * as THREE from "three";
 
 
 /**
- * Encapsulates a renderer functionality for intializing and handling m_objects and entities in three.js
+ * Encapsulates a renderer functionality for intializing and handling m_objects 
+ *  and entities in three.js. 
  */
 export class Renderer{
-    renderer = {};              // ThreeJS Renderer 
+/// PRIVATE:
+    m_renderer = {};              // ThreeJS Renderer 
     m_cameras = {"_counter":0}; 
     m_scenes = {"_counter":0};   
     m_objects = {"_counter":0};
     m_lights = {"_counter":0};
 
 /// PUBLIC:
-    constructor(canvas = null){
+    constructor(canvas = null, background){
         if(canvas)
-            this.renderer = new THREE.WebGLRenderer({ canvas:canvas });
+            this.m_renderer = new THREE.WebGLRenderer({ canvas:canvas });
         else
-            this.renderer = new THREE.WebGLRenderer();    
+            this.m_renderer = new THREE.WebGLRenderer();
+
+        this.m_renderer.setClearColor(background);
     }
 
     // ========================= Camera Methods =========================
-    addCamera(fov, ar, near, far){
+    addCamera(fov, ar, near, far, position, target){
         const id = (this.m_cameras["_counter"]++).toString();
         this.m_cameras[id] = new THREE.PerspectiveCamera(fov, ar, near, far);
-        return (id, this.m_cameras[id]);
+        this.m_cameras[id].position.x = position[0];
+        this.m_cameras[id].position.y = position[1];
+        this.m_cameras[id].position.z = position[2];
+        this.m_cameras[id].lookAt(target[0], target[1], target[2]);
+        return id;
     }
+
+    getCamera(cameraid){return this.m_cameras[cameraid];}
 
     // ========================= Scene Methods =========================
     addScene(){
         const id = (this.m_scenes["_counter"]++).toString();
         this.m_scenes[id] =  new THREE.Scene();
-        return (id, this.m_scenes[id]);
+        return id;
     }
 
+    clearScene(sceneid){
+        console.log(sceneid);
+        this.m_scenes[sceneid].clear();
+    }
 
     // ========================= Lights Methods =========================
     addDirLight(color, intensity, direction, position){
@@ -42,7 +56,7 @@ export class Renderer{
         const light = new THREE.DirectionalLight(color, intensity);
         light.position.set(position[0], position[1], position[2]);
         this.m_lights[id] = light;
-        return (id, this.m_lights[id]);
+        return id;
     }
 
     attachLight(sceneid, lightid){
@@ -61,6 +75,8 @@ export class Renderer{
 
     // ========================= Renderer Methods =========================
     render(sceneid, cameraid){
-        this.renderer.render(this.m_scenes[sceneid], this.m_cameras[cameraid]);
+        this.m_renderer.render(this.m_scenes[sceneid], this.m_cameras[cameraid]);
     }
+
+    getRenderer(){return this.m_renderer;}
 }
