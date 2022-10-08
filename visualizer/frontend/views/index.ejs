@@ -3,7 +3,6 @@
 
 <head>
 	<meta name="viewport" content="width=device-width" />
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="../css/index.css" />
 	<title>
 		<%= subject %>
@@ -16,11 +15,11 @@
 
 	<div class="ParentDiv">
 		<div class="float-child">
-			<canvas width="720px" height="720px"  id="3DWindow" style="width:115vh; height:75vh"></canvas>
+			<canvas width="720px" height="720px"  id="3DWindow" style="width:75vw; height:75vh"></canvas>
 		</div>
 		<div class="float-child container">
 			<form >
-				<h4>Sensor input info:</h4>
+				<h1>Sensor input info:</h1>
 				<table id="identifier_table">
 					<tr>
 						<th>cid</th>
@@ -46,28 +45,22 @@
 					</tr>
 					
 				</table>
-	
-
-			<h4>Choose inputs by order:</h4>
-			<label for="iorder">Inputs Order:</label>
-			<input type="text" id="iorder" name="inputorder" placeholder="dx,id,dy,vx,vy,ax,az">
-			<br>
-			<label for="sensors_content">Inputs Data:</label>
-			<textarea id="sensors_content" name="sensors_content" placeholder="0,0,0,0.."></textarea>
-			<h6>Note: New lines seperate individual sensor data</h6>
-			<input type="submit" value="Render">
-			<input type="button" value="Animate Via CSV" disabled>
+				<h1>Sensor input info:</h1>
+				<label for="iorder">Inputs Order:</label>
+				<input type="text" id="iorder" name="inputorder" placeholder="dx,id,dy,vx,vy,ax,az">
+				<label for="sensors_content">Inputs Data:</label>
+				<textarea id="sensors_content" name="sensors_content" placeholder="0,0,0,0.."></textarea>
+				<h4>Note: New lines seperate individual sensor data</h4>
+				<input type="submit" value="Render">
+				<input type="button" value="Animate Via CSV" disabled>
 			</form>
-			<br>
-
 		</div>
 	</div>
 	<div id="successAlert" class="alert alert-success" role="alert" style="display: none;"> </div>
 	<div id="errorAlert" class="alert alert-danger" role="alert" style="display: none;"> </div>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-
+	
+	
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> -->
 	<script type="module" src="../js/index.js"></script>
-	<script type="module" src="../js/formScripts.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 
 if (!(HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'))) {
     console.log("Your browser does not support importmaps, please try another browser");
+    alert("Please run the application on a different browser");
     throw new Error("Please run the application on a different browser");
 }else{
     console.log("Your browser supports importmaps");

@@ -38,6 +38,18 @@ export class Renderer{
 
     getCamera(cameraid){return this.m_cameras[cameraid];}
 
+    setCameraAspectRatio(cameraid, aspectRatio){
+        this.m_cameras[cameraid].aspect = aspectRatio;
+        this.m_cameras[cameraid].updateProjectionMatrix();
+    }
+
+    updateAspectRatio(cameraid){
+
+        const canvas = this.m_renderer.domElement;
+        const aspect = canvas.clientWidth / canvas.clientHeight;
+        this.setCameraAspectRatio(cameraid, aspect);
+    }
+
     // ========================= Scene Methods =========================
     addScene(){
         const id = (this.m_scenes["_counter"]++).toString();
