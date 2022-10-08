@@ -10,7 +10,9 @@ if (!(HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'))) {
 		
 const importMap = {
     imports: {
-        three: './js/lib/three/build/three.module.js'
+        three: './modules/three/build/three.module.js',
+        OrbitControls: './modules/three/examples/jsm/controls/OrbitControls.js',
+        OBJLoader: "./modules/three/examples/jsm/loaders/OBJLoader.js"
     }
 };
 

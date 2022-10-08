@@ -1,8 +1,12 @@
-import * as THREE from "three";
+import { OrbitControls } from 'OrbitControls';
+import {OBJLoader} from 'OBJLoader';
+import {Renderer} from './renderer/renderer.js';
 
-import { OrbitControls } from './lib/three/examples/jsm/controls/OrbitControls.js';
-import {OBJLoader} from './lib/three/examples/jsm/loaders/OBJLoader.js';
 
+function main(){
+    const canvas_dom_obj = document.getElementById("3DWindow");
+    const temporary = new Renderer(canvas_dom_obj);
+}
 
 
 
@@ -55,8 +59,7 @@ function createBox(dx, dy, dz, w, h, l, rx, ry, rz){
 }
 
 
-function renderToCanvas(canvasid) {
-    // DOM OBJECTS
+function renderToCanvas(canvasid){
 
     //RENDERER
     const canvas_dom_obj = document.getElementById(canvasid);
@@ -83,6 +86,16 @@ function renderToCanvas(canvasid) {
       //controls2.update();
     //CONTROLERS
 
+    
+//     //CAMERA
+//     const fov = 75;
+//     const aspect = 2;  // the canvas default
+//     const near = 0.1;
+//     const far = 5;
+//     const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+//     camera.position.z = 70;
+
+//     //CONTROLERS
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.minDistance = 1;
@@ -193,4 +206,4 @@ function renderToCanvas(canvasid) {
     animate()
 }
 
-renderToCanvas("3DWindow");
+main();
